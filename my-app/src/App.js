@@ -1,26 +1,112 @@
 import React from 'react';
-import logo from './logo.svg';
+import GitHubUserCard from "./components/GitHubUsersCard";
+import FollowersList from "./components/FollowersList";
+import ProjectsList from "./components/ProjectsList";
+import { Container, Typography } from "@material-ui/core";
+
 import './App.css';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          This will be a GITHUB User Card App
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  state = {
+    userToFetch: "pjose92"
+  }
+
+  componentDidMount() {
+    fetch(`https://api.github.com/users/${this.state.userToFetch}`)
+    .then(res => res.json())
+    .then(user => this.setState({...this.state, user: user}))
+    .catch(err => console.log("Error in the componentDidMount: ", err));
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.userToFetch !== this.state.userToFetch) {
+      fetch(`https://api.github.com/users/${this.state.userToFetch}`)
+      .then(res => res.json())
+      .then(user => this.setState({...this.state, user: user }))
+      .then(() => this.fetchFollowers(this.state.userToFetch))
+      .catch(err => console.log("Error in componentDidUpdate: ", err));
+    }
+  }
+
+
+
+
+fetchFollowers = userToFetch =>
+fetch(`https://api.github.com/users/${userToFetch}/followers`)
+  .then(res => res.json())
+  .then(followers =>
+    this.setState({
+      ...this.state,
+      projects: undefined,
+      followers: followers
+    })
+  )
+  .catch(err => console.log("Error in fetchFollowers: ", err));
+
+  fetchProjects = userToFetch => {
+    fetch(`https://api.github.com/users/${userToFetch}/repos`)
+    .then(res => res.json())
+    .then(projects =>
+      this.setState({
+        ...this.state,
+        followers: undefined,
+        projects: projects
+      })
+      )
+      .catch(err => console.log("THere is an error in fetchProject: ", err));
+  }
+
+  handleUserButton = userToFetch =>
+  this.setState({...this.state, userToFetch: userToFetch});
+
+  handleSearchInput = event =>
+  this.setState({...this.state, searchTerm: event.target.value });
+
+  searchFollowers = event => {
+    event.preventDefault();
+    this.setState({
+      ...this.state,
+      followers: this.state.followers.filter(followers =>
+        followers.login
+        .toLowerCase()
+        .includes(this.state.searchTerm.toLowerCase())
+        )
+    });
+  };
+
+  clearForm = event => {
+    event.preventDefault();
+    this.fetchFollowers(this.state.userToFetch);
+    this.setState({...this.state, searchTerm: ""});
+  };
+
+  render() {
+    const { user, followers, projects } = this.state;
+    console.log(this.state);
+    return user ? (
+      <Container maxWidth="xs">
+        <Typography component="div">
+          <GitHubUserCard
+            user={user}
+            fetchFollowers={this.fetchFollowers}
+            fetchProjects={this.fetchProjects}
+          />
+          <FollowersList
+            followers={followers}
+            searchFollowers={this.searchFollowers}
+            clearForm={this.clearForm}
+            handleUserButton={this.handleUserButton}
+            handleSearchInput={this.handleSearchInput}
+            searchTerm={this.state.searchTerm || ""}
+          />
+          <ProjectsList projects={projects} />
+        </Typography>
+      </Container>
+    ) : (
+      <div></div>
+    );
+  }
 }
+
 
 export default App;
