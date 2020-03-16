@@ -36,7 +36,8 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
       followers: followers
     })
   )
-  .catch(err => console.log("Error in fetchFollowers: ", err));
+  .catch(err => console.log("Error in fetchFollowers: followers ", err));
+
 
   fetchProjects = userToFetch => {
     fetch(`https://api.github.com/users/${userToFetch}/repos`)
@@ -51,9 +52,11 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
       .catch(err => console.log("THere is an error in fetchProject: ", err));
   };
 
+  // this handles the ability to be able to click on a user
   handleUserButton = userToFetch =>
   this.setState({...this.state, userToFetch: userToFetch});
 
+  // this handles the ability to type in the search bar 
   handleSearchInput = event =>
   this.setState({...this.state, searchTerm: event.target.value });
 
@@ -80,13 +83,13 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
     console.log(this.state);
     return user ? (
       <Container maxWidth="xs">
-        <Typography align="center" variant="h3">Github User Card</Typography>
         <Typography component="div">
           <GitHubUserCard
             user={user}
             fetchFollowers={this.fetchFollowers}
             fetchProjects={this.fetchProjects}
           />
+          {/* this contains the show following tabs */}
           <FollowersList
             followers={followers}
             searchFollowers={this.searchFollowers}
@@ -95,6 +98,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
             handleSearchInput={this.handleSearchInput}
             searchTerm={this.state.searchTerm || ""}
           />
+          {/* this contains the show projcts tabs */}
           <ProjectsList projects={projects} />
         </Typography>
       </Container>
