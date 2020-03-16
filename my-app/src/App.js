@@ -36,7 +36,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
       followers: followers
     })
   )
-  .catch(err => console.log("Error in fetchFollowers: followers ", err));
+  .catch(err => console.log("Error in fetchFollowers: ", err));
 
 
   fetchProjects = userToFetch => {
@@ -52,7 +52,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
       .catch(err => console.log("THere is an error in fetchProject: ", err));
   };
 
-  // this handles the ability to be able to click on a user
+  // this handles the ability to be able to click on a user  being fallow
   handleUserButton = userToFetch =>
   this.setState({...this.state, userToFetch: userToFetch});
 
