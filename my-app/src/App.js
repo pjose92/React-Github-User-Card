@@ -4,12 +4,10 @@ import FollowersList from "./components/FollowersList";
 import ProjectsList from "./components/ProjectsList";
 import { Container, Typography } from "@material-ui/core";
 
-import './App.css';
-
 class App extends React.Component {
   state = {
     userToFetch: "pjose92"
-  }
+  };
 
   componentDidMount() {
     fetch(`https://api.github.com/users/${this.state.userToFetch}`)
@@ -27,9 +25,6 @@ class App extends React.Component {
       .catch(err => console.log("Error in componentDidUpdate: ", err));
     }
   }
-
-
-
 
 fetchFollowers = userToFetch =>
 fetch(`https://api.github.com/users/${userToFetch}/followers`)
@@ -54,7 +49,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
       })
       )
       .catch(err => console.log("THere is an error in fetchProject: ", err));
-  }
+  };
 
   handleUserButton = userToFetch =>
   this.setState({...this.state, userToFetch: userToFetch});
@@ -66,8 +61,8 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
     event.preventDefault();
     this.setState({
       ...this.state,
-      followers: this.state.followers.filter(followers =>
-        followers.login
+      followers: this.state.followers.filter(follower =>
+        follower.login
         .toLowerCase()
         .includes(this.state.searchTerm.toLowerCase())
         )
@@ -77,7 +72,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
   clearForm = event => {
     event.preventDefault();
     this.fetchFollowers(this.state.userToFetch);
-    this.setState({...this.state, searchTerm: ""});
+    this.setState({...this.state, searchTerm: "" });
   };
 
   render() {
@@ -85,6 +80,7 @@ fetch(`https://api.github.com/users/${userToFetch}/followers`)
     console.log(this.state);
     return user ? (
       <Container maxWidth="xs">
+        <Typography align="center" variant="h3">Github User Card</Typography>
         <Typography component="div">
           <GitHubUserCard
             user={user}

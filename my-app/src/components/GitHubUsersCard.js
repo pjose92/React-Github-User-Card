@@ -15,7 +15,7 @@ import {
               <Card>
                   <CardActionArea>
                       <CardMedia 
-                      style={{ height: 400 }}
+                      style={{ height: 300 }}
                       image={this.props.user.avatar_url}
                       title={this.props.user.name} 
                       />
